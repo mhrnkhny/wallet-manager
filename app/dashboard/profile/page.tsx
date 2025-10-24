@@ -163,7 +163,7 @@ export default function ProfilePage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fa-IR').format(amount) + ' تومان';
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
   };
 
   if (loading) {
@@ -185,12 +185,12 @@ export default function ProfilePage() {
       <div className="py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">پروفایل کاربری</h1>
+          <h1 className="text-2xl font-bold text-white">پروفایل کاربری</h1>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="p-4 bg-success-50 border border-success-500 rounded-lg text-success-700">
+          <div className="p-4 bg-success-500/10 border-2 border-success-500/30 rounded-2xl text-success-500">
             {success}
           </div>
         )}
@@ -205,9 +205,9 @@ export default function ProfilePage() {
 
             {/* User Details */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
-              <p className="text-gray-600 mt-1">{user.email}</p>
-              <p className="text-sm text-gray-500 mt-2">
+              <h2 className="text-2xl font-bold text-white">{user.name}</h2>
+              <p className="text-gray-300 mt-1">{user.email}</p>
+              <p className="text-sm text-gray-400 mt-2">
                 عضو از: {formatDate(user.created_at)}
               </p>
             </div>
@@ -238,9 +238,9 @@ export default function ProfilePage() {
             {/* Total Cards */}
             <Card variant="elevated" padding="medium">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-primary-600"
+                    className="w-6 h-6 text-primary-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -254,8 +254,8 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">تعداد کارت‌ها</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalCards}</p>
+                  <p className="text-sm text-gray-400">تعداد کارت‌ها</p>
+                  <p className="text-2xl font-bold text-white">{stats.totalCards}</p>
                 </div>
               </div>
             </Card>
@@ -263,9 +263,9 @@ export default function ProfilePage() {
             {/* Total Transactions */}
             <Card variant="elevated" padding="medium">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-secondary-100 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-secondary-500/20 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-secondary-600"
+                    className="w-6 h-6 text-secondary-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -279,8 +279,8 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">تعداد تراکنش‌ها</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalTransactions}</p>
+                  <p className="text-sm text-gray-400">تعداد تراکنش‌ها</p>
+                  <p className="text-2xl font-bold text-white">{stats.totalTransactions}</p>
                 </div>
               </div>
             </Card>
@@ -288,9 +288,9 @@ export default function ProfilePage() {
             {/* Total Deposits */}
             <Card variant="elevated" padding="medium">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-success-100 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-success-500/20 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-success-600"
+                    className="w-6 h-6 text-success-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -304,8 +304,8 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">مجموع واریزی‌ها</p>
-                  <p className="text-lg font-bold text-success-600">
+                  <p className="text-sm text-gray-400">مجموع واریزی‌ها</p>
+                  <p className="text-lg font-bold text-success-400">
                     {formatCurrency(stats.totalDeposits)}
                   </p>
                 </div>
@@ -315,9 +315,9 @@ export default function ProfilePage() {
             {/* Total Withdrawals */}
             <Card variant="elevated" padding="medium">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-error-100 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-error-500/20 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-error-600"
+                    className="w-6 h-6 text-error-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -331,8 +331,8 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">مجموع برداشت‌ها</p>
-                  <p className="text-lg font-bold text-error-600">
+                  <p className="text-sm text-gray-400">مجموع برداشت‌ها</p>
+                  <p className="text-lg font-bold text-error-400">
                     {formatCurrency(stats.totalWithdrawals)}
                   </p>
                 </div>
@@ -343,12 +343,12 @@ export default function ProfilePage() {
 
         {/* Account Actions */}
         <Card variant="outlined" padding="large">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">تنظیمات حساب</h3>
+          <h3 className="text-lg font-bold text-white mb-4">تنظیمات حساب</h3>
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-dark-surface rounded-2xl border border-gray-700/30">
               <div className="flex items-center gap-3">
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-5 h-5 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -361,8 +361,8 @@ export default function ProfilePage() {
                   />
                 </svg>
                 <div>
-                  <p className="font-medium text-gray-900">اطلاعات کاربری</p>
-                  <p className="text-sm text-gray-600">ویرایش نام و مشخصات</p>
+                  <p className="font-medium text-white">اطلاعات کاربری</p>
+                  <p className="text-sm text-gray-400">ویرایش نام و مشخصات</p>
                 </div>
               </div>
               <Button
@@ -374,10 +374,10 @@ export default function ProfilePage() {
               </Button>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-dark-surface rounded-2xl border border-gray-700/30">
               <div className="flex items-center gap-3">
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-5 h-5 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -390,8 +390,8 @@ export default function ProfilePage() {
                   />
                 </svg>
                 <div>
-                  <p className="font-medium text-gray-900">امنیت</p>
-                  <p className="text-sm text-gray-600">تغییر رمز عبور</p>
+                  <p className="font-medium text-white">امنیت</p>
+                  <p className="text-sm text-gray-400">تغییر رمز عبور</p>
                 </div>
               </div>
               <Button
@@ -418,7 +418,7 @@ export default function ProfilePage() {
       >
         <div className="space-y-4">
           {error && (
-            <div className="p-3 bg-error-50 border border-error-200 rounded-lg text-error-700 text-sm">
+            <div className="p-3 bg-error-500/10 border-2 border-error-500/30 rounded-2xl text-error-500 text-sm">
               {error}
             </div>
           )}
@@ -471,7 +471,7 @@ export default function ProfilePage() {
       >
         <div className="space-y-4">
           {error && (
-            <div className="p-3 bg-error-50 border border-error-200 rounded-lg text-error-700 text-sm">
+            <div className="p-3 bg-error-500/10 border-2 border-error-500/30 rounded-2xl text-error-500 text-sm">
               {error}
             </div>
           )}

@@ -18,6 +18,7 @@ interface Card {
   card_title?: string;
   cvv2?: string;
   sheba_number?: string;
+  balance: number;
   expiry_date?: string;
   created_at: string;
 }
@@ -47,6 +48,7 @@ export default function CardsPage() {
     cvv2: '',
     shebaNumber: '',
     expiryDate: '',
+    initialBalance: '',
   });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -116,7 +118,7 @@ export default function CardsPage() {
         throw new Error(data.error || 'خطا در افزودن کارت');
       }
 
-      setFormData({ cardNumber: '', bankName: '', cardHolderName: '', cardTitle: '', cvv2: '', shebaNumber: '', expiryDate: '' });
+      setFormData({ cardNumber: '', bankName: '', cardHolderName: '', cardTitle: '', cvv2: '', shebaNumber: '', expiryDate: '', initialBalance: '' });
       setShowModal(false);
       setSnackbar({ open: true, message: 'کارت با موفقیت اضافه شد', severity: 'success' });
       fetchCards();
@@ -210,8 +212,10 @@ export default function CardsPage() {
                 cardTitle={card.card_title}
                 cvv2={card.cvv2}
                 shebaNumber={card.sheba_number}
+                balance={card.balance}
                 expiryDate={card.expiry_date}
                 variant="compact"
+                onCopy={(message) => setSnackbar({ open: true, message, severity: 'success' })}
               />
 
               {/* Delete button overlay */}
@@ -245,7 +249,7 @@ export default function CardsPage() {
         onClose={() => {
           setShowModal(false);
           setError('');
-          setFormData({ cardNumber: '', bankName: '', cardHolderName: '', cardTitle: '', cvv2: '', shebaNumber: '', expiryDate: '' });
+          setFormData({ cardNumber: '', bankName: '', cardHolderName: '', cardTitle: '', cvv2: '', shebaNumber: '', expiryDate: '', initialBalance: '' });
         }}
         title="افزودن کارت جدید"
         maxWidth="md"
@@ -347,6 +351,19 @@ export default function CardsPage() {
             maxLength={24}
             fullWidth
             helperText={`${formData.shebaNumber.length}/24 رقم (بدون IR)`}
+          />
+
+          <TextField
+            label="موجودی اولیه (اختیاری)"
+            placeholder="1000000"
+            value={formData.initialBalance}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, '');
+              setFormData({ ...formData, initialBalance: value });
+            }}
+            type="text"
+            fullWidth
+            helperText="موجودی فعلی کارت به ریال"
           />
 
           <div className="flex gap-3 pt-4">

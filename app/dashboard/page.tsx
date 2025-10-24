@@ -9,6 +9,9 @@ import Card from '@/components/ui/Card';
 import FAB from '@/components/layout/FAB';
 import EmptyState from '@/components/banking/EmptyState';
 import LoadingState from '@/components/banking/LoadingState';
+import TrendChart from '@/components/charts/TrendChart';
+import BarChart from '@/components/charts/BarChart';
+import PieChart from '@/components/charts/PieChart';
 
 interface Transaction {
   id: number;
@@ -209,6 +212,46 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      {/* Charts Section */}
+      {transactions.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-white">نمودارهای تحلیلی</h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Trend Chart */}
+            <Card className="p-6">
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-white">روند واریز و برداشت</h3>
+                <p className="text-sm text-gray-400">۷ روز گذشته</p>
+              </div>
+              <TrendChart transactions={transactions} />
+            </Card>
+
+            {/* Bar Chart */}
+            <Card className="p-6">
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-white">مقایسه واریز و برداشت</h3>
+                <p className="text-sm text-gray-400">۷ روز گذشته</p>
+              </div>
+              <BarChart transactions={transactions} />
+            </Card>
+
+            {/* Pie Chart */}
+            <Card className="p-6 lg:col-span-2">
+              <div className="mb-4 text-center">
+                <h3 className="text-lg font-bold text-white">نسبت واریز به برداشت</h3>
+                <p className="text-sm text-gray-400">کل دوره</p>
+              </div>
+              <div className="flex justify-center">
+                <PieChart transactions={transactions} />
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
 
       {/* Recent Transactions Section */}
       <div className="space-y-4">

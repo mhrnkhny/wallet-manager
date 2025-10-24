@@ -6,12 +6,18 @@ export async function GET(request: NextRequest) {
   try {
     const session = await requireAuth();
 
-    const [cards] = await db.query(
-      'SELECT id, card_number, bank_name, card_holder_name, card_title, cvv2, sheba_number, expiry_date, created_at FROM bank_cards WHERE user_id = ? ORDER BY created_at DESC',
+    const [cards]: any = await db.query(
+      'SELECT id, card_number, bank_name, card_holder_name, card_title, cvv2, sheba_number, balance, expiry_date, created_at FROM bank_cards WHERE user_id = ? ORDER BY created_at DESC',
       [session.userId]
     );
 
-    return NextResponse.json({ cards });
+    // Convert balance to number
+    const cardsWithNumericBalance = cards.map((card: any) => ({
+      ...card,
+      balance: parseFloat(card.balance),
+    }));
+
+    return NextResponse.json({ cards: cardsWithNumericBalance });
   } catch (error) {
     console.error('Get cards error:', error);
     return NextResponse.json(
@@ -24,7 +30,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await requireAuth();
-    const { cardNumber, bankName, cardHolderName, cardTitle, cvv2, shebaNumber, expiryDate } = await request.json();
+    const { cardNumber, bankName, cardHolderName, cardTitle, cvv2, shebaNumber, expiryDate, initialBalance } = await request.json();
 
     if (!cardNumber || !bankName || !cardHolderName) {
       return NextResponse.json(
@@ -65,9 +71,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const balance = initialBalance !== undefined && initialBalance !== null ? parseFloat(initialBalance) : 0;
+
     const [result]: any = await db.query(
-      'INSERT INTO bank_cards (user_id, card_number, bank_name, card_holder_name, card_title, cvv2, sheba_number, expiry_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [session.userId, cardNumber, bankName, cardHolderName, cardTitle || null, cvv2 || null, shebaNumber || null, expiryDate || null]
+      'INSERT INTO bank_cards (user_id, card_number, bank_name, card_holder_name, card_title, cvv2, sheba_number, balance, expiry_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [session.userId, cardNumber, bankName, cardHolderName, cardTitle || null, cvv2 || null, shebaNumber || null, balance, expiryDate || null]
     );
 
     return NextResponse.json({

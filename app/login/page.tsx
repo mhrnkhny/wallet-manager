@@ -67,7 +67,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-dark-bg" dir="rtl">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-dark-bg">
       <div className="w-full max-w-md">
         <Card padding="large" className="w-full">
           {/* Logo and title */}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { prefersReducedMotion } from '../animations/AnimationConfig';
 
@@ -35,7 +35,8 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const shouldReduceMotion = prefersReducedMotion();
-    const inputId = id || `textfield-${Math.random().toString(36).substr(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || `textfield-${generatedId}`;
     const helperTextId = `${inputId}-helper`;
     const errorTextId = `${inputId}-error`;
 
@@ -53,7 +54,8 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         disabled:bg-gray-800 disabled:cursor-not-allowed disabled:border-gray-700
         ${startAdornment ? 'pr-12' : ''}
         ${endAdornment ? 'pl-12' : ''}
-        placeholder-transparent
+        ${label ? 'placeholder:opacity-0 focus:placeholder:opacity-50' : 'placeholder:opacity-50'}
+        placeholder:text-gray-500 placeholder:transition-opacity
       `.trim();
     };
 
@@ -70,30 +72,28 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     return (
       <div className={`${widthClass} ${className}`}>
         <div className="relative">
-          {/* Floating Label */}
-          {label && (
-            <motion.label
-              htmlFor={inputId}
-              className={`absolute right-4 pointer-events-none transition-all duration-200 ${
-                error
-                  ? 'text-error-500'
-                  : isFocused
-                    ? 'text-primary-400 font-medium'
-                    : 'text-gray-400'
-              }`}
-              initial={false}
-              animate={{
-                top: isLabelFloating ? '0.5rem' : '50%',
-                fontSize: isLabelFloating ? '0.75rem' : '1rem',
-                translateY: isLabelFloating ? '0' : '-50%',
-              }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-            >
-              {label}
-            </motion.label>
-          )}
-
           <div className="relative">
+            {/* Floating Label */}
+            {label && (
+              <label
+                htmlFor={inputId}
+                className={`absolute ${startAdornment ? 'right-12' : 'right-4'} pointer-events-none transition-all duration-200 z-50 bg-transparent ${
+                  error
+                    ? 'text-error-500'
+                    : isFocused
+                      ? 'text-primary-400 font-medium'
+                      : 'text-gray-400'
+                }`}
+                style={{
+                  top: isLabelFloating ? '0.5rem' : '50%',
+                  fontSize: isLabelFloating ? '0.75rem' : '1rem',
+                  transform: isLabelFloating ? 'translateY(0)' : 'translateY(-50%)',
+                }}
+              >
+                {label}
+              </label>
+            )}
+
             {/* Start Adornment */}
             {startAdornment && (
               <div

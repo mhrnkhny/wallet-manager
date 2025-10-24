@@ -9,6 +9,7 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import BankCard from '@/components/banking/BankCard';
 import Snackbar from '@/components/ui/Snackbar';
+import DatePicker from '@/components/ui/DatePicker';
 
 interface CardData {
   id: number;
@@ -67,20 +68,6 @@ export default function NewTransactionPage() {
     }
   };
 
-  // Generate Jalali date options (last 30 days and next 7 days)
-  const generateDateOptions = () => {
-    const dates = [];
-    for (let i = -30; i <= 7; i++) {
-      const date = moment().add(i, 'days');
-      dates.push({
-        value: date.format('jYYYY/jMM/jDD'),
-        label: `${date.format('jYYYY/jMM/jDD')} - ${date.format('dddd')}`,
-      });
-    }
-    return dates;
-  };
-
-  const dateOptions = generateDateOptions();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -409,15 +396,13 @@ export default function NewTransactionPage() {
               </div>
 
               {/* Date */}
-              <Select
+              <DatePicker
                 label="تاریخ تراکنش"
                 value={formData.jalaliDate}
-                onChange={(e) => setFormData({ ...formData, jalaliDate: e.target.value })}
-                options={dateOptions}
+                onChange={(date) => setFormData({ ...formData, jalaliDate: date })}
+                placeholder="انتخاب تاریخ"
                 fullWidth
-                required
-                error={!!errors.jalaliDate}
-                errorText={errors.jalaliDate}
+                error={errors.jalaliDate}
               />
 
               {/* Submit Buttons */}

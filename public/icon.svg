@@ -1,0 +1,32 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="110" fill="#6366f1"/>
+
+  <!-- Bank Card Icon -->
+  <g transform="translate(80, 140)">
+    <!-- Card Background -->
+    <rect x="0" y="0" width="352" height="232" rx="24" fill="white" opacity="0.95"/>
+
+    <!-- Card Stripe -->
+    <rect x="0" y="50" width="352" height="50" fill="#4f46e5"/>
+
+    <!-- Chip -->
+    <rect x="40" y="130" width="60" height="48" rx="8" fill="#fbbf24"/>
+    <rect x="45" y="135" width="50" height="38" rx="6" fill="#f59e0b"/>
+
+    <!-- Card Numbers -->
+    <g fill="#1f2937" opacity="0.7">
+      <circle cx="140" cy="160" r="8"/>
+      <circle cx="165" cy="160" r="8"/>
+      <circle cx="190" cy="160" r="8"/>
+      <circle cx="215" cy="160" r="8"/>
+    </g>
+
+    <!-- Contactless Icon -->
+    <g transform="translate(280, 130)">
+      <path d="M20 15 A 15 15 0 0 1 5 30" stroke="#6366f1" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M30 10 A 25 25 0 0 1 5 35" stroke="#6366f1" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M40 5 A 35 35 0 0 1 5 40" stroke="#6366f1" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

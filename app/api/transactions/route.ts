@@ -26,9 +26,10 @@ export async function GET(request: NextRequest) {
       [session.userId]
     );
 
-    // Convert Gregorian dates to Jalali
+    // Convert Gregorian dates to Jalali and amount to number
     const transactionsWithJalali = transactions.map((t: any) => ({
       ...t,
+      amount: parseFloat(t.amount),
       jalali_date: moment(t.transaction_date).format('jYYYY/jMM/jDD'),
     }));
 
@@ -65,9 +66,9 @@ export async function POST(request: NextRequest) {
     // Convert Jalali date to Gregorian
     const gregorianDate = moment(jalaliDate, 'jYYYY/jMM/jDD').format('YYYY-MM-DD');
 
-    // Verify card belongs to user
+    // Verify card belongs to user and get current balance
     const [cards]: any = await db.query(
-      'SELECT id FROM bank_cards WHERE id = ? AND user_id = ?',
+      'SELECT id, balance FROM bank_cards WHERE id = ? AND user_id = ?',
       [cardId, session.userId]
     );
 
@@ -78,23 +79,61 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const [result]: any = await db.query(
-      'INSERT INTO transactions (user_id, card_id, transaction_type, amount, title, description, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [session.userId, cardId, transactionType, amount, title, description || null, gregorianDate]
-    );
+    const card = cards[0];
+    const currentBalance = parseFloat(card.balance);
+    const transactionAmount = parseFloat(amount);
 
-    return NextResponse.json({
-      success: true,
-      transaction: {
-        id: result.insertId,
-        cardId,
-        transactionType,
-        amount,
-        title,
-        description,
-        jalaliDate,
-      },
-    });
+    // Check if withdrawal amount exceeds balance
+    if (transactionType === 'withdrawal' && transactionAmount > currentBalance) {
+      return NextResponse.json(
+        { error: `موجودی کافی نیست. موجودی فعلی: ${currentBalance.toLocaleString('fa-IR')} ریال` },
+        { status: 400 }
+      );
+    }
+
+    // Start transaction
+    const connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    try {
+      // Insert transaction
+      const [result]: any = await connection.query(
+        'INSERT INTO transactions (user_id, card_id, transaction_type, amount, title, description, transaction_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [session.userId, cardId, transactionType, transactionAmount, title, description || null, gregorianDate]
+      );
+
+      // Update card balance
+      const newBalance = transactionType === 'deposit'
+        ? currentBalance + transactionAmount
+        : currentBalance - transactionAmount;
+
+      await connection.query(
+        'UPDATE bank_cards SET balance = ? WHERE id = ?',
+        [newBalance, cardId]
+      );
+
+      // Commit transaction
+      await connection.commit();
+      connection.release();
+
+      return NextResponse.json({
+        success: true,
+        transaction: {
+          id: result.insertId,
+          cardId,
+          transactionType,
+          amount: transactionAmount,
+          title,
+          description,
+          jalaliDate,
+        },
+        newBalance,
+      });
+    } catch (err) {
+      await connection.rollback();
+      connection.release();
+      throw err;
+    }
   } catch (error) {
     console.error('Add transaction error:', error);
     return NextResponse.json(

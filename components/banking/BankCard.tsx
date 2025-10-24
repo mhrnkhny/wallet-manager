@@ -11,9 +11,11 @@ export interface BankCardProps {
   cardTitle?: string;
   cvv2?: string;
   shebaNumber?: string;
+  balance?: number;
   expiryDate?: string;
   variant?: 'default' | 'compact';
   onClick?: () => void;
+  onCopy?: (message: string) => void;
 }
 
 const BankCard: React.FC<BankCardProps> = ({
@@ -23,15 +25,35 @@ const BankCard: React.FC<BankCardProps> = ({
   cardTitle,
   cvv2,
   shebaNumber,
+  balance,
   expiryDate = '08/29',
   variant = 'default',
   onClick,
+  onCopy,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const shouldReduceMotion = prefersReducedMotion();
 
+  const handleCopy = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      onCopy?.(`${label} کپی شد`);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      onCopy?.('خطا در کپی کردن');
+    }
+  };
+
   const formatCardNumber = (number: string) => {
     return number.replace(/(\d{4})(?=\d)/g, '$1 ');
+  };
+
+  const formatCurrency = (amount: number) => {
+    // Handle NaN, undefined, null cases
+    if (amount == null || isNaN(amount)) {
+      return '0 ریال';
+    }
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
   };
 
   const handleHover = () => {
@@ -78,16 +100,52 @@ const BankCard: React.FC<BankCardProps> = ({
         {/* Bank Name and Card Number */}
         <div className="space-y-2 mb-3">
           <p className="text-xs opacity-90 font-medium">{bankName}</p>
-          <p className="font-mono text-base font-bold tracking-wider">
-            {formatCardNumber(cardNumber)}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="font-mono text-base font-bold tracking-wider flex-1">
+              {formatCardNumber(cardNumber)}
+            </p>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopy(cardNumber, 'شماره کارت');
+              }}
+              className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors active:scale-95"
+              title="کپی شماره کارت"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Sheba Number */}
         {shebaNumber && (
           <div className="mb-3">
             <p className="text-xs opacity-70 mb-0.5">شماره شبا</p>
-            <p className="font-mono text-xs opacity-90">IR{shebaNumber}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-xs opacity-90 flex-1">IR{shebaNumber}</p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopy(`IR${shebaNumber}`, 'شماره شبا');
+                }}
+                className="p-1 rounded-lg bg-white/20 hover:bg-white/30 transition-colors active:scale-95"
+                title="کپی شماره شبا"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Balance */}
+        {balance !== undefined && (
+          <div className="mb-3 p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+            <p className="text-xs opacity-70 mb-0.5">موجودی</p>
+            <p className="text-base font-bold">{formatCurrency(balance)}</p>
           </div>
         )}
 
